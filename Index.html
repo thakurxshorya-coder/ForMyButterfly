@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Cutie Pie</title>
+    <style>
+        /* Base Styling */
+        body {
+            margin: 0;
+            padding: 0;
+            background: #ffb7b2; 
+            font-family: 'Georgia', serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #4a4a4a;
+            overflow: hidden;
+        }
+
+        /* --- ENVELOPE LAYER --- */
+        .envelope-wrapper {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.6s ease-in-out;
+            z-index: 10;
+        }
+
+        .envelope {
+            width: 280px;
+            height: 180px;
+            background-color: #f1909a;
+            border-radius: 0 0 10px 10px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .envelope::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 0;
+            height: 0;
+            border-left: 140px solid transparent;
+            border-right: 140px solid transparent;
+            border-top: 100px solid #e07a84;
+            transform-origin: top;
+            top: -1px;
+        }
+
+        .heart-seal {
+            font-size: 45px;
+            z-index: 2;
+            animation: pulse 1.5s infinite;
+            transition: transform 0.3s;
+        }
+
+        .envelope-wrapper:hover .heart-seal {
+            transform: scale(1.2);
+        }
+
+        .click-text {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #ffffff;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* --- LETTER LAYER --- */
+        .letter-container {
+            background-color: #ffffff;
+            width: 90%;
+            max-width: 500px;
+            min-height: 520px;
+            padding: 30px 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid #f3d1d1;
+            position: relative;
+            box-sizing: border-box;
+            display: none; 
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .letter-container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 8px;
+            background: linear-gradient(to right, #ff9aa2, #ffb7b2, #ffdac1, #e2f0cb, #b5ead7);
+            border-top-left-radius: 15px; border-top-right-radius: 15px;
+        }
+
+        /* Multi-page layers */
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out forwards;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        h1 {
+            font-size: 24px;
+            text-align: center;
+            color: #d63031;
+            margin-bottom: 20px;
+        }
+
+        .sorry-text {
+            font-style: italic;
+            font-size: 32px;
+            text-align: center;
+            color: #d63031;
+            margin-top: 50px;
+            font-weight: bold;
+        }
+
+        .emoji-center {
+            font-size: 50px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .poem-line {
+            font-size: 17px;
+            line-height: 1.8;
+            margin-bottom: 12px;
+            text-align: center;
+            font-style: italic;
+            color: #555;
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        /* Video Container for Page 4 */
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 125%; /* Keeps a nice vertical aspect ratio for Shorts */
+            height: 0;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* Navigation Buttons */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        button {
+            background-color: #ff9aa2;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 20px;
+            font-family: 'Georgia', serif;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(255,154,162,0.4);
+        }
+
+        button:hover {
+            background-color: #e07a84;
+            transform: translateY(-1px);
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            box-shadow: none;
+            cursor: not-allowed;
+            opacity: 0.5;
+            transform: none;
+        }
+
+        .progress-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background-color: #ffe3e3;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+
+        .dot.active {
+            background-color: #d63031;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- BACKGROUND AUDIO PLAYER (Optional if you still have an offline song.mp3) -->
+    <audio id="bgSong" loop src="song.mp3"></audio>
+
+    <!-- LAYER 1: THE ENVELOPE -->
+    <div class="envelope-wrapper" id="envelopeWrapper" onclick="openLetter()">
+        <div class="envelope">
+            <div class="heart-seal">❤️</div>
+        </div>
+        <div class="click-text">Click to open</div>
+    </div>
+
+    <!-- LAYER 2: THE MULTI-PAGE LETTER -->
+    <div class="letter-container" id="letterContainer">
+        
+        <!-- PAGE 1: The Sorry -->
+        <div class="page active" id="page1">
+            <div class="sorry-text">Sorry</div>
+            <div class="emoji-center">❤️‍🩹</div>
+            <p style="margin-top: 50px; color: #888; font-size: 14px;">(Click next to read...)</p>
+        </div>
+
+        <!-- PAGE 2: The Poetic Lines -->
+        <div class="page" id="page2">
+            <h1>For You... ✨</h1>
+            <div class="poem-line">Rasmalai, ho tum meri methi methi si</div>
+            <div class="poem-line">Hasthi hoyi achi lagti ho, roya nah karo</div>
+            <div class="poem-line">Motichur ka laddo ho tum, golo molo sa</div>
+            <div class="poem-line">Aaise naraz nah hua karo humse</div>
+            <div class="poem-line">aaise nhi raha paoga tumse baat kare bina</div>
+            <div class="poem-line">Tumhare bina dil nhi lagta kisi bhi chiz mein</div>
+        </div>
+
+        <!-- PAGE 3: The Promise & Memories -->
+        <div class="page" id="page3">
+            <h1>Please Listen... 🥺</h1>
+            <p>Bas Madam Jii tumhari yaado se bhara rahta hai mera din</p>
+            <p>Woh tumhari smile, tumhari hasne ki awaz<br>
+               Woh tumhari halki halki si flirting<br>
+               bas yeh hi toh chize hai joh..... bhot kuch hai mere liye</p>
+            
+            <p style="font-weight: bold; color: #d63031; font-size: 18px; margin-top: 25px;">
+                Please Maaf kardo Cutieee Piee<br>
+                Mein Pkka apni glti sudharoga
+            </p>
+        </div>
+
+        <!-- PAGE 4: The YouTube Short Video -->
+        <div class="page" id="page4">
+            <h1>A Little Message 🎬</h1>
+            <div class="video-container">
+                <!-- YouTube Embedded Short Player -->
+                <iframe src="https://www.youtube.com/embed/lbtcuzs4CSI" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+        </div>
+
+        <!-- Navigation & Progress Tracking -->
+        <div>
+            <div class="nav-buttons">
+                <button id="prevBtn" onclick="changePage(-1)" disabled>Back</button>
+                <button id="nextBtn" onclick="changePage(1)">Next →</button>
+            </div>
+            <div class="progress-dots">
+                <div class="dot active" id="dot1"></div>
+                <div class="dot" id="dot2"></div>
+                <div class="dot" id="dot3"></div>
+                <div class="dot" id="dot4"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let currentPage = 1;
+        const totalPages = 4; // Total pages updated to 4
+
+        function openLetter() {
+            const envelope = document.getElementById('envelopeWrapper');
+            const letter = document.getElementById('letterContainer');
+            const music = document.getElementById('bgSong');
+            
+            music.play().catch(error => {
+                console.log("Audio file placeholder skipped or muted.");
+            });
+            
+            envelope.style.opacity = '0';
+            envelope.style.transform = 'scale(0.8)';
+            
+            setTimeout(() => {
+                envelope.style.display = 'none';
+                letter.style.display = 'flex';
+                setTimeout(() => {
+                    letter.style.opacity = '1';
+                }, 50);
+            }, 600);
+        }
+
+        function changePage(direction) {
+            document.getElementById(`page${currentPage}`).classList.remove('active');
+            document.getElementById(`dot${currentPage}`).classList.remove('active');
+
+            currentPage += direction;
+
+            document.getElementById(`page${currentPage}`).classList.add('active');
+            document.getElementById(`dot${currentPage}`).classList.add('active');
+
+            document.getElementById('prevBtn').disabled = (currentPage === 1);
+            
+            if (currentPage === totalPages) {
+                document.getElementById('nextBtn').innerText = "I Love You ❤️";
+            } else {
+                document.getElementById('nextBtn').innerText = "Next →";
+            }
+        }
+    </script>
+</body>
+</html>

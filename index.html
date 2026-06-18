@@ -3,354 +3,703 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For My Cutie Pie</title>
+    <title>Plans with You</title>
     <style>
-        /* Base Styling */
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap');
+
+        /* --- Core Background Styling --- */
         body {
             margin: 0;
             padding: 0;
-            background: #ffb7b2; 
-            font-family: 'Georgia', serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
-            color: #4a4a4a;
-            overflow: hidden;
-        }
-
-        /* --- ENVELOPE LAYER --- */
-        .envelope-wrapper {
-            position: absolute;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            cursor: pointer;
-            transition: all 0.6s ease-in-out;
-            z-index: 10;
+            background: linear-gradient(180deg, #b3e5fc 0%, #e1f5fe 100%);
+            font-family: 'Nunito', sans-serif;
+            overflow: hidden;
+            position: relative;
+            transition: background 1.8s ease-in-out;
         }
 
-        .envelope {
-            width: 280px;
-            height: 180px;
-            background-color: #f1909a;
-            border-radius: 0 0 10px 10px;
+        /* Ambient floating background clouds */
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            filter: blur(40px);
+            z-index: 1;
+            animation: floatClouds 25s infinite ease-in-out alternate;
+            transition: opacity 1.5s ease-in-out;
+        }
+        .cloud-1 { width: 350px; height: 250px; top: 10%; left: -5%; }
+        .cloud-2 { width: 450px; height: 300px; bottom: 5%; right: -5%; animation-delay: -5s; }
+
+        /* Romantic Heart Layer */
+        .romantic-hearts {
+            position: absolute;
+            width: 100%; height: 100%;
+            top: 0; left: 0;
+            pointer-events: none;
+            z-index: 2;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        .heart {
+            position: absolute;
+            color: rgba(240, 98, 146, 0.4);
+            font-size: 2rem;
+            animation: floatHearts 6s infinite linear;
+            transition: color 1.5s ease, transform 0.3s;
+        }
+        .h1 { left: 10%; animation-delay: 0s; bottom: -10%; }
+        .h2 { left: 30%; animation-delay: 2s; bottom: -10%; font-size: 1.5rem; }
+        .h3 { right: 15%; animation-delay: 1s; bottom: -10%; font-size: 2.5rem; }
+        .h4 { right: 35%; animation-delay: 3.5s; bottom: -10%; }
+        .h5 { left: 50%; animation-delay: 4.5s; bottom: -10%; font-size: 1.8rem; }
+
+        /* --- Progressive Romantic Background States --- */
+        body.romantic-bg { background: linear-gradient(180deg, #f8bbd0 0%, #fce4ec 100%); }
+        body.romantic-bg .cloud { opacity: 0.15; }
+        body.romantic-bg .romantic-hearts { opacity: 1; }
+        body.deepening-1 { background: linear-gradient(180deg, #f48fb1 0%, #f8bbd0 100%); }
+        body.deepening-1 .heart { color: rgba(233, 30, 99, 0.5); }
+        body.deepening-2 { background: linear-gradient(180deg, #f06292 0%, #f48fb1 100%); }
+        body.deepening-2 .heart { color: rgba(194, 24, 91, 0.55); }
+        body.deepening-3 { background: linear-gradient(180deg, #ad1457 0%, #d81b60 100%); }
+        body.deepening-3 .heart { color: rgba(255, 255, 255, 0.4); }
+        body.deepening-4 { background: linear-gradient(180deg, #880e4f 0%, #ad1457 100%); }
+        body.deepening-5 { background: linear-gradient(180deg, #380016 0%, #1a000a 100%); }
+        body.deepening-5 .heart { color: rgba(245, 0, 87, 0.6); animation-duration: 4.5s; }
+
+        @keyframes floatClouds {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(50px, 30px) scale(1.15); }
+        }
+        @keyframes floatHearts {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* --- Dynamic Scene Wrapper --- */
+        .scene-wrapper {
             position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            width: 400px;
+            height: 560px;
+            z-index: 10;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
+        /* --- Enhanced Envelope --- */
+        .envelope {
+            position: absolute;
+            width: 390px;
+            height: 290px;
+            background: #eedfcc;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15);
+            border-radius: 4px 4px 12px 12px;
+            cursor: pointer;
+            z-index: 30;
+            border: 4px solid #fffdf9;
+            transition: transform 1.2s ease, opacity 1.2s ease, visibility 1.2s;
+        }
+
+        /* Airmail Vintage Border Accents */
         .envelope::before {
             content: '';
             position: absolute;
-            top: 0;
-            width: 0;
-            height: 0;
-            border-left: 140px solid transparent;
-            border-right: 140px solid transparent;
-            border-top: 100px solid #e07a84;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border: 6px dashed #d32f2f;
+            border-radius: 8px;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        .envelope-flap {
+            position: absolute;
+            top: -2px; left: -2px;
+            width: 0; height: 0;
+            border-left: 197px solid transparent;
+            border-right: 197px solid transparent;
+            border-top: 150px solid #dfcfb9;
             transform-origin: top;
-            top: -1px;
+            transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 35;
+            filter: drop-shadow(0 4px 4px rgba(0,0,0,0.08));
         }
 
-        .heart-seal {
-            font-size: 45px;
-            z-index: 2;
-            animation: pulse 1.5s infinite;
-            transition: transform 0.3s;
+        /* Beautiful 3D Heart Wax Seal */
+        .wax-seal {
+            position: absolute;
+            top: 130px;
+            left: 172px;
+            width: 46px;
+            height: 46px;
+            background: #b71c1c;
+            border-radius: 50%;
+            z-index: 38;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.25), inset -2px -2px 6px rgba(0,0,0,0.4), inset 2px 2px 6px rgba(255,255,255,0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.3rem;
+            color: #fff;
+            transition: transform 0.8s ease, opacity 0.5s ease;
         }
 
-        .envelope-wrapper:hover .heart-seal {
-            transform: scale(1.2);
+        .envelope-pocket {
+            position: absolute;
+            bottom: -2px; left: -2px;
+            width: 0; height: 0;
+            border-left: 197px solid rgba(245, 235, 215, 0.96);
+            border-right: 197px solid rgba(245, 235, 215, 0.96);
+            border-bottom: 148px solid rgba(234, 222, 199, 0.98);
+            border-radius: 0 0 10px 10px;
+            z-index: 33;
+            filter: drop-shadow(0 -4px 8px rgba(0,0,0,0.04));
         }
 
-        .click-text {
-            margin-top: 20px;
-            font-size: 16px;
-            color: #ffffff;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            font-weight: bold;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        /* Vintage Postal Stamp */
+        .postal-stamp {
+            position: absolute;
+            top: 20px; right: 20px;
+            width: 55px; height: 45px;
+            background: #e0cfb5;
+            border: 2px dashed #fff;
+            border-radius: 4px;
+            opacity: 0.7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            transform: rotate(8deg);
+            z-index: 34;
         }
 
-        /* --- LETTER LAYER --- */
+        .pocket-text-container {
+            position: absolute;
+            bottom: 25px; left: 0; width: 100%;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            text-align: center; z-index: 34; padding: 0 25px;
+            box-sizing: border-box; pointer-events: none;
+        }
+
+        .envelope-title {
+            font-family: 'Caveat', cursive;
+            font-size: 2.5rem; color: #2c3e50; margin: 0;
+            font-weight: 700; transform: rotate(-1deg);
+        }
+
+        .envelope-subtitle {
+            font-size: 0.88rem; color: #7f8c8d; font-style: italic; margin: 4px 0 0 0;
+            letter-spacing: 0.5px; font-weight: 600;
+        }
+
+        /* Envelope Open States */
+        .envelope.open .envelope-flap { transform: rotateX(180deg); z-index: 14; }
+        .envelope.open .wax-seal { transform: scale(0) rotate(90deg); opacity: 0; }
+        .envelope.fade-out {
+            opacity: 0; transform: translateY(40px) scale(0.9);
+            pointer-events: none; visibility: hidden;
+        }
+
+        /* --- Letter Stack Container --- */
         .letter-container {
-            background-color: #ffffff;
-            width: 90%;
-            max-width: 500px;
-            min-height: 520px;
-            padding: 30px 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            border: 1px solid #f3d1d1;
-            position: relative;
-            box-sizing: border-box;
-            display: none; 
+            position: absolute;
+            width: 365px; height: 490px;
             opacity: 0;
-            transition: opacity 0.8s ease-in-out;
+            transform: translateY(60px) scale(0.88);
+            pointer-events: none;
+            z-index: 15;
+            perspective: 1500px;
+            transition: transform 1.4s cubic-bezier(0.165, 0.84, 0.44, 1), opacity 1s ease;
+        }
+
+        .letter-container.emerged {
+            opacity: 1; transform: translateY(0) scale(1); pointer-events: auto;
+        }
+
+        /* --- Custom Paper Realism styling --- */
+        .page {
+            position: absolute;
+            width: 100%; height: 100%;
+            background: #fffefb;
+            padding: 35px 30px 30px 45px; /* Extra left padding for realistic notebook feel */
+            box-sizing: border-box;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+            display: flex;
             flex-direction: column;
             justify-content: space-between;
+            transition: transform 0.65s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease;
+            user-select: none;
+            border: 1px solid rgba(0,0,0,0.04);
+            cursor: pointer;
         }
 
-        .letter-container::before {
+        /* Realistic Notebook Lined Rules + Left Pink Margin Margin */
+        .page::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0; height: 8px;
-            background: linear-gradient(to right, #ff9aa2, #ffb7b2, #ffdac1, #e2f0cb, #b5ead7);
-            border-top-left-radius: 15px; border-top-right-radius: 15px;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(rgba(179, 229, 252, 0.35) 1px, transparent 1px);
+            background-size: 100% 28px;
+            margin-top: 55px;
+            pointer-events: none;
+            border-radius: 8px;
         }
 
-        /* Multi-page layers */
-        .page {
-            display: none;
-            animation: fadeIn 0.5s ease-in-out forwards;
-        }
-
-        .page.active {
-            display: block;
+        .page::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 35px; bottom: 0;
+            width: 1px;
+            border-left: 2px solid #ff8a80;
+            opacity: 0.6;
+            pointer-events: none;
         }
 
         h1 {
-            font-size: 24px;
-            text-align: center;
-            color: #d63031;
-            margin-bottom: 20px;
+            font-family: 'Caveat', cursive;
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-weight: 700;
+            border-bottom: 2px dashed rgba(179, 229, 252, 0.8);
+            padding-bottom: 4px;
+            z-index: 5;
         }
 
-        .sorry-text {
-            font-style: italic;
-            font-size: 32px;
-            text-align: center;
-            color: #d63031;
-            margin-top: 50px;
-            font-weight: bold;
-        }
-
-        .emoji-center {
-            font-size: 50px;
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .poem-line {
-            font-size: 17px;
-            line-height: 1.8;
-            margin-bottom: 12px;
-            text-align: center;
-            font-style: italic;
-            color: #555;
-        }
+        body.romantic-bg h1 { border-bottom: 2px dashed #f8bbd0; }
 
         p {
-            font-size: 16px;
-            line-height: 1.7;
-            margin-bottom: 15px;
-            text-align: center;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: #34495e;
+            margin: 0;
+            flex-grow: 1;
+            padding-top: 12px;
+            z-index: 5;
+            font-weight: 600;
         }
 
-        /* Video Container for Page 4 */
-        .video-container {
-            position: relative;
+        /* Text Highlighting Emphasizers */
+        .highlight {
+            background: linear-gradient(120deg, rgba(255,235,59,0.4) 0%, rgba(255,235,59,0.7) 100%);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .romantic-highlight {
+            color: #d81b60;
+            font-family: 'Caveat', cursive;
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        /* Micro Travel Matrix Layout */
+        .list-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            row-gap: 0px; column-gap: 12px;
+            padding-top: 8px; flex-grow: 1;
+            z-index: 5;
+        }
+
+        .list-item { font-size: 0.95rem; color: #4f5d73; line-height: 28px; font-weight: 700; }
+        .list-item::before { content: "📍 "; font-size: 0.8rem; }
+
+        .footer-hint {
+            font-size: 0.8rem; color: #95a5a6;
+            text-align: right; font-style: italic;
+            padding-top: 10px; z-index: 5;
+            font-weight: 600;
+        }
+
+        /* --- Interactive Highly Upgraded Wedding Sticker Badge (Page 10) --- */
+        .wedding-sticker-container {
             width: 100%;
-            padding-bottom: 125%; /* Keeps a nice vertical aspect ratio for Shorts */
-            height: 0;
-            overflow: hidden;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-
-        .video-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: 0;
-        }
-
-        /* Navigation Buttons */
-        .nav-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
-
-        button {
-            background-color: #ff9aa2;
-            color: white;
-            border: none;
-            padding: 10px 25px;
-            border-radius: 20px;
-            font-family: 'Georgia', serif;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 4px 10px rgba(255,154,162,0.4);
-        }
-
-        button:hover {
-            background-color: #e07a84;
-            transform: translateY(-1px);
-        }
-
-        button:disabled {
-            background-color: #cccccc;
-            box-shadow: none;
-            cursor: not-allowed;
-            opacity: 0.5;
-            transform: none;
-        }
-
-        .progress-dots {
+            height: 140px;
             display: flex;
             justify-content: center;
+            align-items: center;
+            margin: 10px 0;
+            z-index: 10;
+        }
+
+        .wedding-sticker {
+            width: 180px;
+            height: 120px;
+            background: linear-gradient(135deg, #fff5f5 0%, #ffebee 100%);
+            border: 4px solid #fff;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(211, 47, 47, 0.15), 0 0 0 1px rgba(0,0,0,0.05);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        /* Golden Mandap Arch Artwork Pattern */
+        .wedding-sticker::before {
+            content: '';
+            position: absolute;
+            top: 8px; left: 12px; right: 12px; bottom: 8px;
+            border: 2px solid #ffd700;
+            border-radius: 12px;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .sticker-emoji-row {
+            font-size: 2.2rem;
+            display: flex;
             gap: 8px;
-            margin-top: 15px;
+            z-index: 2;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+            animation: pulseGroomBride 3s infinite ease-in-out;
         }
 
-        .dot {
-            width: 8px;
-            height: 8px;
-            background-color: #ffe3e3;
-            border-radius: 50%;
-            transition: background 0.3s;
+        .sticker-caption {
+            font-family: 'Caveat', cursive;
+            font-size: 1.4rem;
+            color: #d32f2f;
+            font-weight: 700;
+            margin-top: 8px;
+            z-index: 2;
+            letter-spacing: 0.5px;
         }
 
-        .dot.active {
-            background-color: #d63031;
+        /* Real-time pure-CSS background sparkles inside sticker */
+        .sparkle {
+            position: absolute; color: #ffd700; font-size: 0.9rem; opacity: 0.8;
+            animation: pulseSparkle 2s infinite ease-in-out;
+        }
+        .sp-1 { top: 15px; left: 20px; animation-delay: 0.2s; }
+        .sp-2 { bottom: 20px; right: 20px; animation-delay: 0.7s; }
+
+        /* Hover Sticker Micro-Interactions */
+        .wedding-sticker:hover {
+            transform: scale(1.08) rotate(3deg);
+            box-shadow: 0 12px 28px rgba(211, 47, 47, 0.25), 0 0 0 1px rgba(0,0,0,0.05);
         }
 
-        /* Animations */
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
+        @keyframes pulseGroomBride {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        @keyframes pulseSparkle {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* --- Page Swapping Keyframe Animation --- */
+        .page.swap-animation {
+            animation: flyOutAndStack 0.68s forwards cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        @keyframes flyOutAndStack {
+            0% { transform: translateX(0) rotate(0deg); z-index: 50; }
+            45% { transform: translateX(122%) rotate(14deg) scale(1.03); z-index: 50; }
+            46% { z-index: 1; }
+            100% { transform: translateX(0) rotate(-2deg) scale(0.95); z-index: 1; }
         }
     </style>
 </head>
 <body>
 
-    <!-- BACKGROUND AUDIO PLAYER (Optional if you still have an offline song.mp3) -->
-    <audio id="bgSong" loop src="song.mp3"></audio>
-
-    <!-- LAYER 1: THE ENVELOPE -->
-    <div class="envelope-wrapper" id="envelopeWrapper" onclick="openLetter()">
-        <div class="envelope">
-            <div class="heart-seal">❤️</div>
-        </div>
-        <div class="click-text">Click to open</div>
+    <!-- Soft Ambient Clouds -->
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    
+    <!-- Floating Romantic Hearts Base Matrix -->
+    <div class="romantic-hearts">
+        <div class="heart h1">❤</div>
+        <div class="heart h2">♥</div>
+        <div class="heart h3">💖</div>
+        <div class="heart h4">♥</div>
+        <div class="heart h5">💝</div>
     </div>
 
-    <!-- LAYER 2: THE MULTI-PAGE LETTER -->
-    <div class="letter-container" id="letterContainer">
-        
-        <!-- PAGE 1: The Sorry -->
-        <div class="page active" id="page1">
-            <div class="sorry-text">Sorry</div>
-            <div class="emoji-center">❤️‍🩹</div>
-            <p style="margin-top: 50px; color: #888; font-size: 14px;">(Click next to read...)</p>
-        </div>
+    <div class="scene-wrapper">
 
-        <!-- PAGE 2: The Poetic Lines -->
-        <div class="page" id="page2">
-            <h1>For You... ✨</h1>
-            <div class="poem-line">Rasmalai, ho tum meri methi methi si</div>
-            <div class="poem-line">Hasthi hoyi achi lagti ho, roya nah karo</div>
-            <div class="poem-line">Motichur ka laddo ho tum, golo molo sa</div>
-            <div class="poem-line">Aaise naraz nah hua karo humse</div>
-            <div class="poem-line">aaise nhi raha paoga tumse baat kare bina</div>
-            <div class="poem-line">Tumhare bina dil nhi lagta kisi bhi chiz mein</div>
-        </div>
-
-        <!-- PAGE 3: The Promise & Memories -->
-        <div class="page" id="page3">
-            <h1>Please Listen... 🥺</h1>
-            <p>Bas Madam Jii tumhari yaado se bhara rahta hai mera din</p>
-            <p>Woh tumhari smile, tumhari hasne ki awaz<br>
-               Woh tumhari halki halki si flirting<br>
-               bas yeh hi toh chize hai joh..... bhot kuch hai mere liye</p>
+        <!-- STEP 1: Interactive Envelope -->
+        <div class="envelope" id="envelope">
+            <div class="envelope-flap"></div>
+            <div class="wax-seal">❤</div>
+            <div class="envelope-pocket"></div>
+            <div class="postal-stamp">✈️</div>
             
-            <p style="font-weight: bold; color: #d63031; font-size: 18px; margin-top: 25px;">
-                Please Maaf kardo Cutieee Piee<br>
-                Mein Pkka apni glti sudharoga
-            </p>
-        </div>
-
-        <!-- PAGE 4: The YouTube Short Video -->
-        <div class="page" id="page4">
-            <h1>A Little Message 🎬</h1>
-            <div class="video-container">
-                <!-- YouTube Embedded Short Player -->
-                <iframe src="https://www.youtube.com/embed/lbtcuzs4CSI" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            <div class="pocket-text-container">
+                <h2 class="envelope-title">Plans with You</h2>
+                <p class="envelope-subtitle">Sit Tight, This is gonna be a Long List ✨</p>
             </div>
         </div>
 
-        <!-- Navigation & Progress Tracking -->
-        <div>
-            <div class="nav-buttons">
-                <button id="prevBtn" onclick="changePage(-1)" disabled>Back</button>
-                <button id="nextBtn" onclick="changePage(1)">Next →</button>
+        <!-- STEP 2: The Inside Multi-Layered Journal Stack -->
+        <div class="letter-container" id="letterContainer">
+            
+            <!-- Page 14 -->
+            <div class="page" id="p14">
+                <h1 style="color: #c2185b; text-align: center;">Forever & Always 💕</h1>
+                <p style="font-size: 1.6rem; text-align: center; padding-top: 50px; color: #880e4f; font-family: 'Caveat', cursive;">
+                    I Love you,<br><span style="font-size: 2.5rem; font-weight:700; display:inline-block; margin-top:10px;">Darling ✨</span>
+                </p>
+                <div class="footer-hint">Click to read from the start ↩</div>
             </div>
-            <div class="progress-dots">
-                <div class="dot active" id="dot1"></div>
-                <div class="dot" id="dot2"></div>
-                <div class="dot" id="dot3"></div>
-                <div class="dot" id="dot4"></div>
+
+            <!-- Page 13 -->
+            <div class="page" id="p13">
+                <h1>A Real Question... 🤔</h1>
+                <p style="font-size: 1.25rem; line-height: 1.8; padding-top: 30px; text-align: center; font-family: 'Caveat', cursive;">
+                    So Are you Ready for the Plans,<br> I have with You...<br><br>
+                    <span class="romantic-highlight" style="font-size: 2.2rem;">Darling?</span>
+                </p>
+                <div class="footer-hint">Click for my final answer →</div>
             </div>
+
+            <!-- Page 12 -->
+            <div class="page" id="p12">
+                <h1>10. Growing Older with you 👵👴</h1>
+                <p>Buddhe toh humhe hona hi hai, lekin <span class="highlight">buddhape mein bhi tujhe chedoga</span>...</p>
+                <p style="font-family: 'Caveat', cursive; font-size: 1.6rem; color: #c2185b; padding-top: 15px; font-weight: bold; text-align: center;">
+                    koi dikkat ho toh bata? 😉
+                </p>
+                <div class="footer-hint">Click to turn the page →</div>
+            </div>
+
+            <!-- Page 11 -->
+            <div class="page" id="p11">
+                <h1>9. Living with you 🏡</h1>
+                <p>Somewhere <span class="highlight">Quiet, Peaceful</span> but happening...</p>
+                <p style="font-size: 1.4rem; padding-top: 25px; color: #b71c1c; text-align: center; font-family: 'Caveat', cursive;">
+                    Jaha mein, Tum aur Dher sara Pyaar. ❤️
+                </p>
+                <div class="footer-hint">Click to look down the road →</div>
+            </div>
+
+            <!-- Page 10 -->
+            <div class="page" id="p10">
+                <h1>8. Marrying you 💍</h1>
+                
+                <!-- Highly Upgraded Interactive Sticker Badge -->
+                <div class="wedding-sticker-container">
+                    <div class="wedding-sticker">
+                        <div class="sparkle sp-1">✨</div>
+                        <div class="sparkle sp-2">✨</div>
+                        <div class="sticker-emoji-row">👑👰🤵</div>
+                        <div class="sticker-caption">Just Married!</div>
+                    </div>
+                </div>
+
+                <p style="font-style: italic; text-align: center; color: #546e7a; font-size: 1.1rem; font-family: 'Caveat', cursive;">
+                    "Bas mein kuch nhi khana chaoga iske baare mein" ✨
+                </p>
+                <div class="footer-hint">Click to see our future home →</div>
+            </div>
+
+            <!-- Page 9 -->
+            <div class="page" id="p9">
+                <h1>7. Asking Your Parents' for your Hand 🤝</h1>
+                <p style="padding-top: 15px;">
+                    Tum janti ho yeh <span class="highlight">mushkil hai</span> lekin ho skta hai agr unhe sahi se manaya jaye toh!
+                </p>
+                <div class="footer-hint">Click to see the big day →</div>
+            </div>
+
+            <!-- Page 8 -->
+            <div class="page" id="p8">
+                <h1>6. Taking you on a First Date ☕</h1>
+                <p>Woh jagah jaha mein tumhe pehli baar leke jaoga, woh shant aur relaxing honi chahiye.</p>
+                <p style="padding-top: 10px; font-size: 1.3rem; color: #ad1457; text-align: center; font-family: 'Caveat', cursive;">
+                    Ek Acha View, Hum dono, Thori si baate aur bhot sa pyaar ❤️
+                </p>
+                <div class="footer-hint">Click to step up the game →</div>
+            </div>
+
+            <!-- Page 7 -->
+            <div class="page" id="p7">
+                <h1>5. Meet Each other's Parents 👨‍👩‍👧‍👦</h1>
+                <p>Iss Part mein aayega sabse jyda maja jab ek durse ke gharwalo se milege. Pata nhi kya kya kahaniya batayi hai unhe...</p>
+                <p style="padding-top: 8px; font-style: italic; color: #e91e63; font-family: 'Caveat', cursive; font-size: 1.3rem; text-align: center;">
+                    "Mein toh soch raha ho kahane ki mummy yeh crax ke packet mein nikali thi!" 🤭
+                </p>
+                <div class="footer-hint">Click for our first date plan →</div>
+            </div>
+
+            <!-- Page 6 -->
+            <div class="page" id="p6">
+                <h1>4. Make you Mine ✨</h1>
+                <p>Mujhe nhi pata yeh kab hoga. Lekin pata nhi kyu lgta hai ki yeh hoga...</p>
+                <p style="padding-top: 10px; font-size: 1.3rem; color: #263238; font-family: 'Caveat', cursive; text-align: center;">
+                    Bas woh hi dua hai ki ek din <span class="romantic-highlight">tum meri ho aur mein tumhara.</span>
+                </p>
+                <div class="footer-hint">Click to see family plans →</div>
+            </div>
+
+            <!-- Page 5 -->
+            <div class="page" id="p5">
+                <h1>Humsafar ❤️</h1>
+                <p style="font-size: 1.3rem; color: #263238; line-height: 1.6; padding-top: 15px; font-family: 'Caveat', cursive;">
+                    Lekin in sab mein ek chiz common hai, woh ho <span class="romantic-highlight" style="font-size: 1.8rem;">TUM</span>.<br><br>
+                    In <span class="romantic-highlight" style="font-size: 1.8rem;">Safaro</span> mein meri <span class="romantic-highlight" style="font-size: 1.8rem;">Humsafar</span>.
+                </p>
+                <div class="footer-hint">Click to look into the future →</div>
+            </div>
+
+            <!-- Page 4 -->
+            <div class="page" id="p4">
+                <h1>How We'll Get There ✈️</h1>
+                <p style="padding-top: 15px; font-size: 1.2rem; line-height: 1.8; font-family: 'Caveat', cursive; text-align: center;">
+                    🏍️ Kuch Bike se,<br> 
+                    🚗 Kuch gaadi se,<br> 
+                    🚂 Kuch train mein aur<br> 
+                    🚌 kuch bus se...
+                </p>
+                <div class="footer-hint">Click for the best part →</div>
+            </div>
+
+            <!-- Page 3 -->
+            <div class="page" id="p3">
+                <h1>3. Destinations (Part 2)</h1>
+                <div class="list-grid">
+                    <div class="list-item">Rishikesh</div>
+                    <div class="list-item">Haridwar</div>
+                    <div class="list-item">Kashmir</div>
+                    <div class="list-item">Ladakh</div>
+                    <div class="list-item">Leh</div>
+                    <div class="list-item">Tirthan Valley</div>
+                    <div class="list-item">Sikkim</div>
+                    <div class="list-item">Shillong</div>
+                    <div class="list-item">Guwahati</div>
+                    <div class="list-item">North-East</div>
+                    <div class="list-item">Goa</div>
+                </div>
+                <p style="font-style: italic; color: #78909c; font-size: 1.1rem; margin-top: 4px; font-family: 'Caveat', cursive;">And Still thinking...</p>
+                <div class="footer-hint">Click to see how we'll travel →</div>
+            </div>
+
+            <!-- Page 2 -->
+            <div class="page" id="p2">
+                <h1>2. Travel with you 🌍</h1>
+                <p style="font-size: 0.88rem; margin-bottom: 2px; color:#546e7a;">Phir jab Tum college mein chli jaogi tabh bhot saari trips wagera...</p>
+                <div class="list-grid">
+                    <div class="list-item">Jaipur</div>
+                    <div class="list-item">Udaipur</div>
+                    <div class="list-item">Jodhpur</div>
+                    <div class="list-item">Mathura</div>
+                    <div class="list-item">Agra</div>
+                    <div class="list-item">Vrindavan</div>
+                    <div class="list-item">Manali</div>
+                    <div class="list-item">Mussoorie</div>
+                    <div class="list-item">Dehradun</div>
+                    <div class="list-item">Kedarnath</div>
+                    <div class="list-item">Badrinath</div>
+                    <div class="list-item">Shimla</div>
+                </div>
+                <div class="footer-hint">Continued on the next page →</div>
+            </div>
+
+            <!-- Page 1 -->
+            <div class="page page-1" id="p1">
+                <h1>1. The First Meeting 👋</h1>
+                <p>Toh Madam sabse pehla plan hai humse real life mein pehli baar milna aur <span class="highlight">moj msti</span> karna.</p>
+                <div class="footer-hint">Click anywhere for next item →</div>
+            </div>
+
         </div>
 
     </div>
 
     <script>
-        let currentPage = 1;
-        const totalPages = 4; // Total pages updated to 4
+        const envelope = document.getElementById('envelope');
+        const letterContainer = document.getElementById('letterContainer');
+        
+        // Dynamically bundle the 14-page array matrix
+        let pages = [];
+        for (let i = 1; i <= 14; i++) {
+            pages.push(document.getElementById(`p${i}`));
+        }
+        
+        let isAnimating = false;
+        let envelopeOpen = false;
 
-        function openLetter() {
-            const envelope = document.getElementById('envelopeWrapper');
-            const letter = document.getElementById('letterContainer');
-            const music = document.getElementById('bgSong');
-            
-            music.play().catch(error => {
-                console.log("Audio file placeholder skipped or muted.");
+        // Apply clean stacked dimensional perspective rotations natively via JS
+        function renderStackStyles() {
+            pages.forEach((page, index) => {
+                page.className = 'page';
+                
+                if(index === 0) {
+                    page.classList.add('page-1');
+                    page.style.transform = `rotate(${Math.sin(index) * 1.5}deg) translateZ(0px)`;
+                    page.style.zIndex = pages.length;
+                } else {
+                    page.style.transform = `rotate(${Math.sin(index) * 2.5}deg) translateZ(-${index * 10}px)`;
+                    page.style.zIndex = pages.length - index;
+                }
             });
-            
-            envelope.style.opacity = '0';
-            envelope.style.transform = 'scale(0.8)';
-            
+        }
+
+        renderStackStyles();
+
+        envelope.addEventListener('click', () => {
+            if (envelopeOpen) return;
+            envelopeOpen = true;
+            envelope.classList.add('open');
+
             setTimeout(() => {
-                envelope.style.display = 'none';
-                letter.style.display = 'flex';
-                setTimeout(() => {
-                    letter.style.opacity = '1';
-                }, 50);
-            }, 600);
-        }
+                letterContainer.classList.add('emerged');
+                envelope.classList.add('fade-out');
+            }, 900); 
+        });
 
-        function changePage(direction) {
-            document.getElementById(`page${currentPage}`).classList.remove('active');
-            document.getElementById(`dot${currentPage}`).classList.remove('active');
-
-            currentPage += direction;
-
-            document.getElementById(`page${currentPage}`).classList.add('active');
-            document.getElementById(`dot${currentPage}`).classList.add('active');
-
-            document.getElementById('prevBtn').disabled = (currentPage === 1);
+        letterContainer.addEventListener('click', (e) => {
+            // Prevent swapping page animation if clicking directly on interactive wedding sticker inner contents
+            if (e.target.closest('.wedding-sticker')) return;
             
-            if (currentPage === totalPages) {
-                document.getElementById('nextBtn').innerText = "I Love You ❤️";
-            } else {
-                document.getElementById('nextBtn').innerText = "Next →";
+            if (isAnimating || !envelopeOpen) return;
+            isAnimating = true;
+
+            const topPage = pages[0];
+            topPage.classList.add('swap-animation');
+
+            const nextId = pages[1].id;
+            document.body.className = ''; // Refresh classes safely
+
+            // Progressive Background Shader Matrix Controller
+            if (nextId === 'p5' || nextId === 'p6' || nextId === 'p7') {
+                document.body.classList.add('romantic-bg');
+            } else if (nextId === 'p8' || nextId === 'p9') {
+                document.body.classList.add('romantic-bg', 'deepening-1');
+            } else if (nextId === 'p10' || nextId === 'p11') {
+                document.body.classList.add('romantic-bg', 'deepening-2');
+            } else if (nextId === 'p12') {
+                document.body.classList.add('romantic-bg', 'deepening-3');
+            } else if (nextId === 'p13') {
+                document.body.classList.add('romantic-bg', 'deepening-4');
+            } else if (nextId === 'p14') {
+                document.body.classList.add('romantic-bg', 'deepening-5');
             }
-        }
+
+            setTimeout(() => {
+                topPage.classList.remove('swap-animation');
+                
+                pages.shift();
+                pages.push(topPage);
+
+                renderStackStyles();
+                isAnimating = false;
+            }, 650); 
+        });
     </script>
 </body>
 </html>
